@@ -55,31 +55,38 @@ def gestionar_productos(request):
         precio = request.POST.get('precio')
         stock = request.POST.get('stock')
         categoria_id = request.POST.get('categoria')
-        imagen = request.FILES.get('imagen')
+        imagen = request.FILES.get('imagen')  # 🔹 Correcto para cargar archivos
         activo = request.POST.get('activo') == 'on'
 
         categoria = Categoria.objects.get(id=categoria_id)
 
-        if producto_id:  # Modificación
+        if producto_id:  # 🔄 Modificar producto existente
             producto = Producto.objects.get(id=producto_id)
             producto.nombre = nombre
             producto.descripcion = descripcion
             producto.precio = precio
             producto.stock = stock
             producto.categoria = categoria
-            producto.imagen = imagen or producto.imagen
+
+            # Solo actualizar imagen si se sube una nueva
+            if imagen:
+                producto.imagen = imagen
+
             producto.activo = activo
             producto.save()
-        else:  # Creación
+            messages.success(request, f"Producto '{producto.nombre}' modificado correctamente.")
+        else:  # 🆕 Crear nuevo producto
             Producto.objects.create(
                 nombre=nombre,
                 descripcion=descripcion,
                 precio=precio,
                 stock=stock,
                 categoria=categoria,
-                imagen_url=imagen,
+                imagen=imagen,  # ✅ Aquí estaba el error (antes era imagen_url)
                 activo=activo
             )
+            messages.success(request, f"Producto '{nombre}' creado correctamente.")
+
         return redirect('gestionar_productos')
 
     productos = Producto.objects.all()

@@ -25,11 +25,11 @@
                     <h5 class="card-title">{{ producto.nombre }}</h5>
                     <p class="card-text text-muted">{{ producto.descripcion|truncatechars:80 }}</p>
                     <p class="fw-bold text-primary">Q{{ producto.precio }}</p>
-                    <p class="text-secondary">Disponibles: <strong>{{ producto.stock }}</strong></p>
+                    <p class="text-secondary">Disponibles: <strong id="stock-{{ producto.id }}">{{ producto.stock }}</strong></p>
 
                     <form action="{% url 'agregar_carrito' producto.id %}" method="POST" class="d-flex justify-content-center align-items-center gap-2">
                         {% csrf_token %}
-                        <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock }}" class="form-control w-25 text-center">
+                        <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock }}" class="form-control w-25 text-center" id="cantidad-{{ producto.id }}">
                         <button type="submit" class="btn btn-success btn-sm">Agregar</button>
                     </form>
                 </div>
